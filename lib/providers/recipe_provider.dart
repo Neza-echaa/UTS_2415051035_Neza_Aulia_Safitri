@@ -1,10 +1,14 @@
+
 import 'package:flutter/material.dart';
 
 import '../models/recipe.dart';
-import '../services/recipe_api_service.dart';
+import '../repositories/recipe_repository.dart';
 
 class RecipeProvider extends ChangeNotifier {
-  final RecipeApiService _apiService = RecipeApiService();
+  final RecipeRepository _repository;
+
+  RecipeProvider({RecipeRepository? repository})
+      : _repository = repository ?? RecipeRepository();
 
   List<Recipe> _recipes = [];
 
@@ -54,7 +58,7 @@ class RecipeProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _recipes = await _apiService.fetchRecipes();
+      _recipes = await _repository.getRecipes();
     } catch (e) {
       _errorMessage = e.toString();
     } finally {
@@ -65,7 +69,7 @@ class RecipeProvider extends ChangeNotifier {
 
   Future<Recipe?> loadRecipeDetail(int id) async {
     try {
-      return await _apiService.fetchRecipeDetail(id);
+      return await _repository.getRecipeDetail(id);
     } catch (e) {
       _errorMessage = e.toString();
       notifyListeners();
