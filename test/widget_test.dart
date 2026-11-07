@@ -5,6 +5,6 @@ void main() {
   testWidgets('RecipeMate app smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(const RecipeMateApp());
 
-    expect(find.text('RecipeMate'), findsOneWidget);
+    expect(find.text('Hello, Food Lover! 👋'), findsOneWidget);
   });
 }
