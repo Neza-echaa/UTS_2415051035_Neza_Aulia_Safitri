@@ -15,7 +15,7 @@ class RecipeDetailScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF5),
       appBar: AppBar(
-        title: const Text('Recipe Details'),
+        title: const Text('Detail Resep'),
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
@@ -30,11 +30,16 @@ class RecipeDetailScreen extends StatelessWidget {
               errorBuilder: (_, _, _) => Container(
                 height: 240,
                 color: const Color(0xFFF5E5D5),
-                child: const Icon(Icons.restaurant, size: 60),
+                child: const Icon(
+                  Icons.restaurant,
+                  size: 60,
+                ),
               ),
             ),
           ),
+
           const SizedBox(height: 20),
+
           Text(
             recipe.name,
             style: const TextStyle(
@@ -43,26 +48,46 @@ class RecipeDetailScreen extends StatelessWidget {
               color: Color(0xFF38251C),
             ),
           ),
+
           const SizedBox(height: 10),
+
           Text(
-            '${recipe.cuisine} • ${recipe.difficulty}',
+            '${recipe.cuisineLabel} • ${recipe.difficultyLabel}',
             style: const TextStyle(color: Colors.grey),
           ),
+
           const SizedBox(height: 18),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _info(Icons.star, recipe.rating.toStringAsFixed(1)),
-              _info(Icons.access_time, '${recipe.totalTime} min'),
-              _info(Icons.people, '${recipe.servings} servings'),
+              _info(
+                Icons.star,
+                recipe.rating.toStringAsFixed(1),
+              ),
+              _info(
+                Icons.access_time,
+                '${recipe.totalTime} menit',
+              ),
+              _info(
+                Icons.people,
+                '${recipe.servings} porsi',
+              ),
             ],
           ),
+
           const SizedBox(height: 25),
+
           const Text(
-            'Ingredients',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            'Bahan-bahan',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
+
           const SizedBox(height: 10),
+
           ...recipe.ingredients.map(
             (item) => Padding(
               padding: const EdgeInsets.only(bottom: 9),
@@ -80,12 +105,19 @@ class RecipeDetailScreen extends StatelessWidget {
               ),
             ),
           ),
+
           const SizedBox(height: 25),
+
           const Text(
-            'Cooking Instructions',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            'Cara Membuat',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
+
           const SizedBox(height: 10),
+
           ...recipe.instructions.asMap().entries.map(
             (entry) => Padding(
               padding: const EdgeInsets.only(bottom: 15),
@@ -109,6 +141,30 @@ class RecipeDetailScreen extends StatelessWidget {
               ),
             ),
           ),
+
+          const SizedBox(height: 20),
+
+          if (recipe.mealTypeLabels.isNotEmpty) ...[
+            const Text(
+              'Kategori Hidangan',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: recipe.mealTypeLabels.map(
+                (type) => Chip(
+                  label: Text(type),
+                  backgroundColor: const Color(0xFFFFE0C2),
+                  side: BorderSide.none,
+                ),
+              ).toList(),
+            ),
+          ],
         ],
       ),
     );
@@ -117,7 +173,10 @@ class RecipeDetailScreen extends StatelessWidget {
   Widget _info(IconData icon, String value) {
     return Column(
       children: [
-        Icon(icon, color: const Color(0xFFE8873A)),
+        Icon(
+          icon,
+          color: const Color(0xFFE8873A),
+        ),
         const SizedBox(height: 5),
         Text(value),
       ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/recipe.dart';
 import '../providers/recipe_provider.dart';
 import '../widgets/recipe_card.dart';
 
@@ -27,7 +28,7 @@ class HomeScreen extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             children: [
               const Text(
-                'Hello, Food Lover! 👋',
+                'Halo, Pecinta Kuliner! 👋',
                 style: TextStyle(
                   color: Color(0xFF8B7466),
                   fontSize: 14,
@@ -35,7 +36,7 @@ class HomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 5),
               const Text(
-                'What would you like\nto cook today?',
+                'Mau memasak apa\nhari ini?',
                 style: TextStyle(
                   color: Color(0xFF38251C),
                   fontSize: 27,
@@ -45,11 +46,12 @@ class HomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 22),
 
-              // Search field
               TextField(
-                onChanged: provider.searchRecipes,
+                onChanged: (value) {
+                  provider.searchRecipes(value);
+                },
                 decoration: InputDecoration(
-                  hintText: 'Search your favorite recipe...',
+                  hintText: 'Cari resep favoritmu...',
                   prefixIcon: const Icon(Icons.search),
                   filled: true,
                   fillColor: Colors.white,
@@ -62,14 +64,14 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
+
               const SizedBox(height: 25),
 
-              // Section title
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Popular Recipes',
+                    'Resep Populer',
                     style: TextStyle(
                       fontSize: 19,
                       fontWeight: FontWeight.bold,
@@ -77,14 +79,19 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   TextButton(
-                    onPressed: () => onExploreTap(1),
+                    onPressed: () {
+                      onExploreTap(1);
+                    },
                     child: const Text(
-                      'See all',
-                      style: TextStyle(color: Color(0xFFE8873A)),
+                      'Lihat Semua',
+                      style: TextStyle(
+                        color: Color(0xFFE8873A),
+                      ),
                     ),
                   ),
                 ],
               ),
+
               const SizedBox(height: 10),
 
               if (provider.isLoading && recipes.isEmpty)
@@ -94,7 +101,8 @@ class HomeScreen extends StatelessWidget {
                     child: CircularProgressIndicator(),
                   ),
                 )
-              else if (provider.errorMessage != null && recipes.isEmpty)
+              else if (provider.errorMessage != null &&
+                  recipes.isEmpty)
                 _errorWidget(provider)
               else if (recipes.isEmpty)
                 const Text('Belum ada resep yang tersedia.')
@@ -103,7 +111,9 @@ class HomeScreen extends StatelessWidget {
                   height: 235,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
-                    itemCount: recipes.length > 8 ? 8 : recipes.length,
+                    itemCount: recipes.length > 8
+                        ? 8
+                        : recipes.length,
                     separatorBuilder: (_, _) =>
                         const SizedBox(width: 14),
                     itemBuilder: (context, index) {
@@ -120,16 +130,17 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 25),
 
-              // Cuisine categories
               const Text(
-                'Explore by Cuisine',
+                'Jelajahi Berdasarkan Jenis Masakan',
                 style: TextStyle(
                   fontSize: 19,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF38251C),
                 ),
               ),
+
               const SizedBox(height: 12),
+
               SizedBox(
                 height: 42,
                 child: ListView(
@@ -138,7 +149,7 @@ class HomeScreen extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.only(right: 9),
                       child: ActionChip(
-                        label: Text(cuisine),
+                        label: Text(translateCuisine(cuisine)),
                         backgroundColor: Colors.white,
                         side: BorderSide.none,
                         onPressed: () {
@@ -150,16 +161,18 @@ class HomeScreen extends StatelessWidget {
                   }).toList(),
                 ),
               ),
+
               const SizedBox(height: 25),
 
               const Text(
-                'Find Your Next Favorite',
+                'Rekomendasi untukmu',
                 style: TextStyle(
                   fontSize: 19,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF38251C),
                 ),
               ),
+
               const SizedBox(height: 12),
 
               if (recipes.isNotEmpty)
@@ -185,7 +198,7 @@ class HomeScreen extends StatelessWidget {
         const Text('Gagal memuat resep.'),
         TextButton(
           onPressed: provider.loadRecipes,
-          child: const Text('Coba lagi'),
+          child: const Text('Coba Lagi'),
         ),
       ],
     );

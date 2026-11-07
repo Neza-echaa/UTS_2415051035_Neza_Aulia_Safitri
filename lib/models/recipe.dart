@@ -48,4 +48,64 @@ class Recipe {
   }
 
   int get totalTime => prepTimeMinutes + cookTimeMinutes;
+
+  String get difficultyLabel {
+    switch (difficulty.toLowerCase()) {
+      case 'easy':
+        return 'Mudah';
+      case 'medium':
+        return 'Sedang';
+      case 'hard':
+        return 'Sulit';
+      default:
+        return difficulty;
+    }
+  }
+
+  String get cuisineLabel => translateCuisine(cuisine);
+
+  List<String> get mealTypeLabels =>
+      mealType.map(translateMealType).toList();
+}
+
+String translateCuisine(String cuisine) {
+  const translations = {
+    'american': 'Amerika',
+    'asian': 'Asia',
+    'brazilian': 'Brasil',
+    'chinese': 'Tiongkok',
+    'french': 'Prancis',
+    'greek': 'Yunani',
+    'indian': 'India',
+    'italian': 'Italia',
+    'japanese': 'Jepang',
+    'korean': 'Korea',
+    'lebanese': 'Lebanon',
+    'mediterranean': 'Mediterania',
+    'mexican': 'Meksiko',
+    'moroccan': 'Maroko',
+    'pakistani': 'Pakistan',
+    'russian': 'Rusia',
+    'spanish': 'Spanyol',
+    'thai': 'Thailand',
+    'turkish': 'Turki',
+    'vietnamese': 'Vietnam',
+  };
+
+  return translations[cuisine.toLowerCase()] ?? cuisine;
+}
+
+String translateMealType(String mealType) {
+  const translations = {
+    'breakfast': 'Sarapan',
+    'lunch': 'Makan Siang',
+    'dinner': 'Makan Malam',
+    'snack': 'Camilan',
+    'dessert': 'Hidangan Penutup',
+    'appetizer': 'Hidangan Pembuka',
+    'beverage': 'Minuman',
+    'side dish': 'Lauk Pendamping',
+  };
+
+  return translations[mealType.toLowerCase()] ?? mealType;
 }

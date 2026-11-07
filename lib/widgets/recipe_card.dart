@@ -59,6 +59,7 @@ class RecipeCard extends StatelessWidget {
                 },
               ),
             ),
+
             Padding(
               padding: const EdgeInsets.all(12),
               child: Column(
@@ -74,7 +75,9 @@ class RecipeCard extends StatelessWidget {
                       color: Color(0xFF38251C),
                     ),
                   ),
+
                   const SizedBox(height: 8),
+
                   Row(
                     children: [
                       const Icon(
@@ -95,7 +98,7 @@ class RecipeCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        '${recipe.totalTime} min',
+                        '${recipe.totalTime} menit',
                         style: const TextStyle(
                           fontSize: 12,
                           color: Colors.grey,

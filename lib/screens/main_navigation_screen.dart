@@ -15,13 +15,15 @@ class MainNavigationScreen extends StatefulWidget {
       _MainNavigationScreenState();
 }
 
-class _MainNavigationScreenState extends State<MainNavigationScreen> {
+class _MainNavigationScreenState
+    extends State<MainNavigationScreen> {
   int _selectedIndex = 0;
 
   void _openRecipe(int id) async {
     final provider = context.read<RecipeProvider>();
 
     Recipe? recipe;
+
     for (final item in provider.recipes) {
       if (item.id == id) {
         recipe = item;
@@ -35,7 +37,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
     if (recipe == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gagal membuka detail resep.')),
+        const SnackBar(
+          content: Text('Gagal membuka detail resep.'),
+        ),
       );
       return;
     }
@@ -59,14 +63,14 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       ),
       ExploreScreen(onRecipeTap: _openRecipe),
       const _PlaceholderScreen(
-        title: 'My Favorites',
+        title: 'Resep Favorit',
         icon: Icons.favorite_border,
         message: 'Resep favoritmu akan muncul di sini.',
       ),
       const _PlaceholderScreen(
-        title: 'Profile',
+        title: 'Profil',
         icon: Icons.person_outline,
-        message: 'Profil pengguna RecipeMate.',
+        message: 'Halaman profil pengguna RecipeMate.',
       ),
     ];
 
@@ -85,22 +89,22 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           NavigationDestination(
             icon: Icon(Icons.home_outlined),
             selectedIcon: Icon(Icons.home),
-            label: 'Home',
+            label: 'Beranda',
           ),
           NavigationDestination(
             icon: Icon(Icons.explore_outlined),
             selectedIcon: Icon(Icons.explore),
-            label: 'Explore',
+            label: 'Jelajahi',
           ),
           NavigationDestination(
             icon: Icon(Icons.favorite_border),
             selectedIcon: Icon(Icons.favorite),
-            label: 'Favorites',
+            label: 'Favorit',
           ),
           NavigationDestination(
             icon: Icon(Icons.person_outline),
             selectedIcon: Icon(Icons.person),
-            label: 'Profile',
+            label: 'Profil',
           ),
         ],
       ),
@@ -127,7 +131,11 @@ class _PlaceholderScreen extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 65, color: const Color(0xFFE8873A)),
+            Icon(
+              icon,
+              size: 65,
+              color: const Color(0xFFE8873A),
+            ),
             const SizedBox(height: 12),
             Text(message),
           ],

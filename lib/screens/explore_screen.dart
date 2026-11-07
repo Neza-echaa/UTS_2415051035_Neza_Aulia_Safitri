@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/recipe.dart';
 import '../providers/recipe_provider.dart';
 import '../widgets/recipe_card.dart';
 
@@ -19,7 +20,7 @@ class ExploreScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Explore Recipes',
+          'Jelajahi Resep',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
@@ -30,7 +31,7 @@ class ExploreScreen extends StatelessWidget {
             child: TextField(
               onChanged: provider.searchRecipes,
               decoration: InputDecoration(
-                hintText: 'Search recipes...',
+                hintText: 'Cari nama resep...',
                 prefixIcon: const Icon(Icons.search),
                 filled: true,
                 fillColor: Colors.white,
@@ -48,12 +49,13 @@ class ExploreScreen extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),
               children: provider.cuisines.map((cuisine) {
-                final selected = provider.selectedCuisine == cuisine;
+                final selected =
+                    provider.selectedCuisine == cuisine;
 
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: ChoiceChip(
-                    label: Text(cuisine),
+                    label: Text(translateCuisine(cuisine)),
                     selected: selected,
                     selectedColor: const Color(0xFFFFE0C2),
                     onSelected: (_) {
@@ -80,15 +82,19 @@ class ExploreScreen extends StatelessWidget {
     RecipeProvider provider,
   ) {
     if (provider.isLoading && provider.recipes.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
     }
 
-    if (provider.errorMessage != null && provider.recipes.isEmpty) {
+    if (provider.errorMessage != null &&
+        provider.recipes.isEmpty) {
       return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text('Gagal memuat resep.'),
+            const SizedBox(height: 8),
             ElevatedButton(
               onPressed: provider.loadRecipes,
               child: const Text('Coba Lagi'),
