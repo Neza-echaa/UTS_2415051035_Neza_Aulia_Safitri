@@ -1,0 +1,91 @@
+import 'package:flutter/material.dart';
+
+import '../models/recipe.dart';
+import '../services/recipe_api_service.dart';
+
+class RecipeProvider extends ChangeNotifier {
+  final RecipeApiService _apiService = RecipeApiService();
+
+  List<Recipe> _recipes = [];
+
+  bool _isLoading = false;
+  String? _errorMessage;
+
+  String _searchQuery = '';
+  String _selectedCuisine = 'All';
+
+  List<Recipe> get recipes => _recipes;
+
+  bool get isLoading => _isLoading;
+
+  String? get errorMessage => _errorMessage;
+
+  String get searchQuery => _searchQuery;
+
+  String get selectedCuisine => _selectedCuisine;
+
+  List<String> get cuisines {
+    final values = _recipes
+        .map((recipe) => recipe.cuisine)
+        .toSet()
+        .toList();
+
+    values.sort();
+
+    return ['All', ...values];
+  }
+
+  List<Recipe> get filteredRecipes {
+    return _recipes.where((recipe) {
+      final matchesSearch = recipe.name
+          .toLowerCase()
+          .contains(_searchQuery.toLowerCase());
+
+      final matchesCuisine = _selectedCuisine == 'All' ||
+          recipe.cuisine == _selectedCuisine;
+
+      return matchesSearch && matchesCuisine;
+    }).toList();
+  }
+
+  Future<void> loadRecipes() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      _recipes = await _apiService.fetchRecipes();
+    } catch (e) {
+      _errorMessage = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<Recipe?> loadRecipeDetail(int id) async {
+    try {
+      return await _apiService.fetchRecipeDetail(id);
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      return null;
+    }
+  }
+
+  void searchRecipes(String query) {
+    _searchQuery = query;
+    notifyListeners();
+  }
+
+  void filterByCuisine(String cuisine) {
+    _selectedCuisine = cuisine;
+    notifyListeners();
+  }
+
+  void resetFilters() {
+    _searchQuery = '';
+    _selectedCuisine = 'All';
+    notifyListeners();
+  }
+}
