@@ -1,6 +1,9 @@
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../models/recipe.dart';
+import '../providers/recipe_provider.dart';
 
 class RecipeDetailScreen extends StatelessWidget {
   final Recipe recipe;
@@ -12,6 +15,9 @@ class RecipeDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<RecipeProvider>();
+    final isFavorite = provider.isFavorite(recipe.id);
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF5),
       appBar: AppBar(
@@ -40,13 +46,40 @@ class RecipeDetailScreen extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-          Text(
-            recipe.name,
-            style: const TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF38251C),
-            ),
+          // Judul resep dan tombol Favorite
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  recipe.name,
+                  style: const TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF38251C),
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  context
+                      .read<RecipeProvider>()
+                      .toggleFavorite(recipe.id);
+                },
+                icon: Icon(
+                  isFavorite
+                      ? Icons.favorite
+                      : Icons.favorite_border,
+                  color: isFavorite
+                      ? Colors.red
+                      : Colors.grey,
+                  size: 30,
+                ),
+                tooltip: isFavorite
+                    ? 'Hapus dari Favorite'
+                    : 'Tambah ke Favorite',
+              ),
+            ],
           ),
 
           const SizedBox(height: 10),
@@ -61,18 +94,9 @@ class RecipeDetailScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _info(
-                Icons.star,
-                recipe.rating.toStringAsFixed(1),
-              ),
-              _info(
-                Icons.access_time,
-                '${recipe.totalTime} menit',
-              ),
-              _info(
-                Icons.people,
-                '${recipe.servings} porsi',
-              ),
+              _info(Icons.star, recipe.rating.toStringAsFixed(1)),
+              _info(Icons.access_time, '${recipe.totalTime} menit'),
+              _info(Icons.people, '${recipe.servings} porsi'),
             ],
           ),
 

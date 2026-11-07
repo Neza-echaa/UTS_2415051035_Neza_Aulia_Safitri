@@ -11,6 +11,7 @@ class RecipeProvider extends ChangeNotifier {
       : _repository = repository ?? RecipeRepository();
 
   List<Recipe> _recipes = [];
+  final Set<int> _favoriteIds = {};
 
   bool _isLoading = false;
   String? _errorMessage;
@@ -19,6 +20,15 @@ class RecipeProvider extends ChangeNotifier {
   String _selectedCuisine = 'All';
 
   List<Recipe> get recipes => _recipes;
+  List<Recipe> get favoriteRecipes {
+  return _recipes
+      .where((recipe) => _favoriteIds.contains(recipe.id))
+      .toList();
+}
+
+bool isFavorite(int recipeId) {
+  return _favoriteIds.contains(recipeId);
+}
 
   bool get isLoading => _isLoading;
 
@@ -92,4 +102,14 @@ class RecipeProvider extends ChangeNotifier {
     _selectedCuisine = 'All';
     notifyListeners();
   }
+
+  void toggleFavorite(int recipeId) {
+  if (_favoriteIds.contains(recipeId)) {
+    _favoriteIds.remove(recipeId);
+  } else {
+    _favoriteIds.add(recipeId);
+  }
+
+  notifyListeners();
+}
 }

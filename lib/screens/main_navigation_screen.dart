@@ -6,6 +6,7 @@ import '../providers/recipe_provider.dart';
 import 'home_screen.dart';
 import 'explore_screen.dart';
 import 'recipe_detail_screen.dart';
+import 'favorite_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -62,11 +63,9 @@ class _MainNavigationScreenState
         },
       ),
       ExploreScreen(onRecipeTap: _openRecipe),
-      const _PlaceholderScreen(
-        title: 'Resep Favorit',
-        icon: Icons.favorite_border,
-        message: 'Resep favoritmu akan muncul di sini.',
-      ),
+      
+      const FavoriteScreen(),
+
       const _PlaceholderScreen(
         title: 'Profil',
         icon: Icons.person_outline,
