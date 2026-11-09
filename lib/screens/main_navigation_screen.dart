@@ -7,6 +7,7 @@ import 'home_screen.dart';
 import 'explore_screen.dart';
 import 'recipe_detail_screen.dart';
 import 'favorite_screen.dart';
+import 'my_recipes_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -63,9 +64,8 @@ class _MainNavigationScreenState
         },
       ),
       ExploreScreen(onRecipeTap: _openRecipe),
-      
+      const MyRecipesScreen(),
       const FavoriteScreen(),
-
       const _PlaceholderScreen(
         title: 'Profil',
         icon: Icons.person_outline,
@@ -94,6 +94,11 @@ class _MainNavigationScreenState
             icon: Icon(Icons.explore_outlined),
             selectedIcon: Icon(Icons.explore),
             label: 'Jelajahi',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.menu_book_outlined),
+            selectedIcon: Icon(Icons.menu_book),
+            label: 'Resepku',
           ),
           NavigationDestination(
             icon: Icon(Icons.favorite_border),

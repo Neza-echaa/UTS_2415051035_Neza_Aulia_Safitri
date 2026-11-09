@@ -1,20 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'providers/recipe_provider.dart';
 import 'screens/main_navigation_screen.dart';
+import 'providers/saved_recipe_provider.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+  url: const String.fromEnvironment('SUPABASE_URL'),
+  publishableKey: const String.fromEnvironment(
+    'SUPABASE_PUBLISHABLE_KEY',
+  ),
+);
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => RecipeProvider()..loadRecipes(),
-        ),
-      ],
-      child: const RecipeMateApp(),
-    ),
-  );
+  MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (_) => RecipeProvider()..loadRecipes(),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => SavedRecipeProvider()..loadSavedRecipes(),
+      ),
+    ],
+    child: const RecipeMateApp(),
+  ),
+);
 }
 
 class RecipeMateApp extends StatelessWidget {
