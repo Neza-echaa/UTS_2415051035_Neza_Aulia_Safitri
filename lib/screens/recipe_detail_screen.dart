@@ -70,9 +70,7 @@ class RecipeDetailScreen extends StatelessWidget {
                   isFavorite
                       ? Icons.favorite
                       : Icons.favorite_border,
-                  color: isFavorite
-                      ? Colors.red
-                      : Colors.grey,
+                  color: isFavorite ? Colors.red : Colors.grey,
                   size: 30,
                 ),
                 tooltip: isFavorite
@@ -102,6 +100,7 @@ class RecipeDetailScreen extends StatelessWidget {
 
           const SizedBox(height: 25),
 
+          // Bahan-bahan
           const Text(
             'Bahan-bahan',
             style: TextStyle(
@@ -132,6 +131,7 @@ class RecipeDetailScreen extends StatelessWidget {
 
           const SizedBox(height: 25),
 
+          // Cara membuat
           const Text(
             'Cara Membuat',
             style: TextStyle(
@@ -168,6 +168,7 @@ class RecipeDetailScreen extends StatelessWidget {
 
           const SizedBox(height: 20),
 
+          // Kategori hidangan
           if (recipe.mealTypeLabels.isNotEmpty) ...[
             const Text(
               'Kategori Hidangan',
