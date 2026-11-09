@@ -1,11 +1,14 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/recipe.dart';
+import '../models/saved_recipe.dart';
 import '../providers/recipe_provider.dart';
 import 'home_screen.dart';
 import 'explore_screen.dart';
 import 'recipe_detail_screen.dart';
+import 'my_recipe_detail_screen.dart';
 import 'favorite_screen.dart';
 import 'my_recipes_screen.dart';
 
@@ -21,7 +24,8 @@ class _MainNavigationScreenState
     extends State<MainNavigationScreen> {
   int _selectedIndex = 0;
 
-  void _openRecipe(int id) async {
+  // Membuka detail resep dari API
+  void _openApiRecipe(int id) async {
     final provider = context.read<RecipeProvider>();
 
     Recipe? recipe;
@@ -54,16 +58,30 @@ class _MainNavigationScreenState
     );
   }
 
+  // Membuka detail resep buatan pengguna dari Supabase
+  void _openSavedRecipe(SavedRecipe recipe) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => MyRecipeDetailScreen(recipe: recipe),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final pages = [
       HomeScreen(
-        onRecipeTap: _openRecipe,
+        onApiRecipeTap: _openApiRecipe,
+        onSavedRecipeTap: _openSavedRecipe,
         onExploreTap: (index) {
           setState(() => _selectedIndex = index);
         },
       ),
-      ExploreScreen(onRecipeTap: _openRecipe),
+      ExploreScreen(
+        onApiRecipeTap: _openApiRecipe,
+        onSavedRecipeTap: _openSavedRecipe,
+      ),
       const MyRecipesScreen(),
       const FavoriteScreen(),
       const _PlaceholderScreen(
@@ -148,3 +166,4 @@ class _PlaceholderScreen extends StatelessWidget {
     );
   }
 }
+  

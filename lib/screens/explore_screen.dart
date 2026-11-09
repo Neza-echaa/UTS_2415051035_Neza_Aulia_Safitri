@@ -1,21 +1,62 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/recipe.dart';
+import '../models/saved_recipe.dart';
 import '../providers/recipe_provider.dart';
+import '../providers/saved_recipe_provider.dart';
 import '../widgets/recipe_card.dart';
+import '../widgets/saved_recipe_card.dart';
 
 class ExploreScreen extends StatelessWidget {
-  final ValueChanged<int> onRecipeTap;
+  final ValueChanged<int> onApiRecipeTap;
+  final ValueChanged<SavedRecipe> onSavedRecipeTap;
 
   const ExploreScreen({
     super.key,
-    required this.onRecipeTap,
+    required this.onApiRecipeTap,
+    required this.onSavedRecipeTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<RecipeProvider>();
+    final recipeProvider = context.watch<RecipeProvider>();
+    final savedProvider = context.watch<SavedRecipeProvider>();
+
+    final apiRecipes = recipeProvider.filteredRecipes;
+
+    final query = recipeProvider.searchQuery.toLowerCase();
+    final selectedCuisine = recipeProvider.selectedCuisine;
+
+    // Filter resep buatan sendiri
+    final savedRecipes = savedProvider.savedRecipes.where((recipe) {
+      final matchesSearch = recipe.recipeName
+          .toLowerCase()
+          .contains(query);
+
+      final savedCuisine = recipe.cuisine ?? '';
+
+      final matchesCuisine = selectedCuisine == 'All' ||
+          translateCuisine(savedCuisine).toLowerCase() ==
+              translateCuisine(selectedCuisine).toLowerCase();
+
+      return matchesSearch && matchesCuisine;
+    }).toList();
+
+    // Gabungkan kategori dari API dan Supabase
+    final allCuisines = {
+      ...recipeProvider.cuisines.where(
+        (cuisine) => cuisine != 'All',
+      ),
+      ...savedProvider.savedRecipes
+          .map((recipe) => recipe.cuisine)
+          .whereType<String>()
+          .where((cuisine) => cuisine.isNotEmpty),
+    }.toList()
+      ..sort();
+
+    final isEmpty = apiRecipes.isEmpty && savedRecipes.isEmpty;
 
     return Scaffold(
       appBar: AppBar(
@@ -26,10 +67,11 @@ class ExploreScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
+          // Kolom pencarian
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
             child: TextField(
-              onChanged: provider.searchRecipes,
+              onChanged: recipeProvider.searchRecipes,
               decoration: InputDecoration(
                 hintText: 'Cari nama resep...',
                 prefixIcon: const Icon(Icons.search),
@@ -43,104 +85,138 @@ class ExploreScreen extends StatelessWidget {
             ),
           ),
 
+          // Filter kategori
           SizedBox(
             height: 45,
             child: ListView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              children: provider.cuisines.map((cuisine) {
-                final selected =
-                    provider.selectedCuisine == cuisine;
+              children: [
+                ChoiceChip(
+                  label: const Text('Semua'),
+                  selected: selectedCuisine == 'All',
+                  selectedColor: const Color(0xFFFFE0C2),
+                  onSelected: (_) {
+                    recipeProvider.filterByCuisine('All');
+                  },
+                ),
+                ...allCuisines.map((cuisine) {
+                  final selected =
+                      translateCuisine(selectedCuisine).toLowerCase() ==
+                      translateCuisine(cuisine).toLowerCase();
 
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: ChoiceChip(
-                    label: Text(translateCuisine(cuisine)),
-                    selected: selected,
-                    selectedColor: const Color(0xFFFFE0C2),
-                    onSelected: (_) {
-                      provider.filterByCuisine(cuisine);
-                    },
-                  ),
-                );
-              }).toList(),
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: ChoiceChip(
+                      label: Text(translateCuisine(cuisine)),
+                      selected: selected,
+                      selectedColor: const Color(0xFFFFE0C2),
+                      onSelected: (_) {
+                        recipeProvider.filterByCuisine(cuisine);
+                      },
+                    ),
+                  );
+                }),
+              ],
             ),
           ),
 
           const SizedBox(height: 12),
 
+          // Hasil pencarian
           Expanded(
-            child: _buildRecipeContent(context, provider),
+            child: Builder(
+              builder: (context) {
+                if ((recipeProvider.isLoading ||
+                        savedProvider.isLoading) &&
+                    isEmpty) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                if (isEmpty &&
+                    (recipeProvider.errorMessage != null ||
+                        savedProvider.errorMessage != null)) {
+                  return Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('Gagal memuat resep.'),
+                        const SizedBox(height: 8),
+                        ElevatedButton(
+                          onPressed: () async {
+                            await Future.wait([
+                              recipeProvider.loadRecipes(),
+                              savedProvider.loadSavedRecipes(),
+                            ]);
+                          },
+                          child: const Text('Coba Lagi'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                if (isEmpty) {
+                  return const Center(
+                    child: Text('Resep tidak ditemukan.'),
+                  );
+                }
+
+                return LayoutBuilder(
+                  builder: (context, constraints) {
+                    final width = constraints.maxWidth;
+
+                    final crossAxisCount = width >= 900
+                        ? 4
+                        : width >= 600
+                            ? 3
+                            : 2;
+
+                    final totalRecipes =
+                        apiRecipes.length + savedRecipes.length;
+
+                    return GridView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: totalRecipes,
+                      gridDelegate:
+                          SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: crossAxisCount,
+                        crossAxisSpacing: 14,
+                        mainAxisSpacing: 14,
+                        childAspectRatio:
+                            width < 400 ? 0.78 : 0.82,
+                      ),
+                      itemBuilder: (context, index) {
+                        if (index < apiRecipes.length) {
+                          final recipe = apiRecipes[index];
+
+                          return RecipeCard(
+                            recipe: recipe,
+                            onTap: () =>
+                                onApiRecipeTap(recipe.id),
+                          );
+                        }
+
+                        final savedIndex =
+                            index - apiRecipes.length;
+                        final recipe = savedRecipes[savedIndex];
+
+                        return SavedRecipeCard(
+                          recipe: recipe,
+                          onTap: () =>
+                              onSavedRecipeTap(recipe),
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildRecipeContent(
-    BuildContext context,
-    RecipeProvider provider,
-  ) {
-    if (provider.isLoading && provider.recipes.isEmpty) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-
-    if (provider.errorMessage != null &&
-        provider.recipes.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('Gagal memuat resep.'),
-            const SizedBox(height: 8),
-            ElevatedButton(
-              onPressed: provider.loadRecipes,
-              child: const Text('Coba Lagi'),
-            ),
-          ],
-        ),
-      );
-    }
-
-    final recipes = provider.filteredRecipes;
-
-    if (recipes.isEmpty) {
-      return const Center(
-        child: Text('Resep tidak ditemukan.'),
-      );
-    }
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final width = constraints.maxWidth;
-
-        final crossAxisCount = width >= 900
-            ? 4
-            : width >= 600
-                ? 3
-                : 2;
-
-        return GridView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: recipes.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
-            crossAxisSpacing: 14,
-            mainAxisSpacing: 14,
-            childAspectRatio: width < 400 ? 0.78 : 0.82,
-          ),
-          itemBuilder: (context, index) {
-            final recipe = recipes[index];
-
-            return RecipeCard(
-              recipe: recipe,
-              onTap: () => onRecipeTap(recipe.id),
-            );
-          },
-        );
-      },
     );
   }
 }
