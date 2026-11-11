@@ -48,6 +48,7 @@ class SavedRecipeCard extends StatelessWidget {
                       height: compact ? 115 : 130,
                       width: double.infinity,
                       fit: BoxFit.cover,
+                      webHtmlElementStrategy: WebHtmlElementStrategy.fallback,
                       errorBuilder: (_, _, _) => _placeholder(context),
                     )
                   : _placeholder(context),

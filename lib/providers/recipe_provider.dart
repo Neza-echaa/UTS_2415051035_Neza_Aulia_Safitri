@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../models/recipe.dart';
 import '../repositories/recipe_repository.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 class RecipeProvider extends ChangeNotifier {
   final RecipeRepository _repository;
 
@@ -23,6 +25,18 @@ class RecipeProvider extends ChangeNotifier {
     return _recipes
         .where((recipe) => _favoriteIds.contains(recipe.id))
         .toList();
+  }
+
+  Future<void> loadFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final savedIds = prefs.getStringList('favorite_recipe_ids') ?? [];
+
+    _favoriteIds
+      ..clear()
+      ..addAll(savedIds.map((id) => int.parse(id)));
+
+    notifyListeners();
   }
 
   bool isFavorite(int recipeId) {
@@ -99,12 +113,19 @@ class RecipeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleFavorite(int recipeId) {
+  Future<void> toggleFavorite(int recipeId) async {
     if (_favoriteIds.contains(recipeId)) {
       _favoriteIds.remove(recipeId);
     } else {
       _favoriteIds.add(recipeId);
     }
+
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setStringList(
+      'favorite_recipe_ids',
+      _favoriteIds.map((id) => id.toString()).toList(),
+    );
 
     notifyListeners();
   }

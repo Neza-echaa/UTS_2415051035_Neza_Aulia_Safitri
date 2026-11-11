@@ -20,11 +20,17 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => RecipeProvider()..loadRecipes()),
+        ChangeNotifierProvider(
+          create: (_) => RecipeProvider()
+            ..loadRecipes()
+            ..loadFavorites(),
+        ),
         ChangeNotifierProvider(
           create: (_) => SavedRecipeProvider()..loadSavedRecipes(),
         ),
-        ChangeNotifierProvider(create: (_) => AppSettingsProvider()),
+        ChangeNotifierProvider(
+          create: (_) => AppSettingsProvider()..loadSettings(),
+        ),
         ChangeNotifierProvider(create: (_) => ProfileProvider()..loadProfile()),
       ],
       child: const RecipeMateApp(),
