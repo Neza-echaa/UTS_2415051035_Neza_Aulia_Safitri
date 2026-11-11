@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,9 +13,7 @@ class MyRecipesScreen extends StatelessWidget {
   Future<void> _openAddRecipe(BuildContext context) async {
     final result = await Navigator.push<bool>(
       context,
-      MaterialPageRoute(
-        builder: (_) => const AddRecipeScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const AddRecipeScreen()),
     );
 
     if (result == true && context.mounted) {
@@ -24,15 +21,10 @@ class MyRecipesScreen extends StatelessWidget {
     }
   }
 
-  Future<void> _openEditRecipe(
-    BuildContext context,
-    SavedRecipe recipe,
-  ) async {
+  Future<void> _openEditRecipe(BuildContext context, SavedRecipe recipe) async {
     final result = await Navigator.push<bool>(
       context,
-      MaterialPageRoute(
-        builder: (_) => EditRecipeScreen(recipe: recipe),
-      ),
+      MaterialPageRoute(builder: (_) => EditRecipeScreen(recipe: recipe)),
     );
 
     if (result == true && context.mounted) {
@@ -40,14 +32,14 @@ class MyRecipesScreen extends StatelessWidget {
     }
   }
 
-  Future<void> _deleteRecipe(
-    BuildContext context,
-    SavedRecipe recipe,
-  ) async {
+  Future<void> _deleteRecipe(BuildContext context, SavedRecipe recipe) async {
+    final colorScheme = Theme.of(context).colorScheme;
+
     final confirm = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
+          backgroundColor: colorScheme.surfaceContainer,
           title: const Text('Hapus Resep?'),
           content: Text(
             'Apakah kamu yakin ingin menghapus '
@@ -73,9 +65,9 @@ class MyRecipesScreen extends StatelessWidget {
 
     if (confirm != true || !context.mounted) return;
 
-    final success = await context
-        .read<SavedRecipeProvider>()
-        .deleteRecipe(recipe.id!);
+    final success = await context.read<SavedRecipeProvider>().deleteRecipe(
+      recipe.id!,
+    );
 
     if (!context.mounted) return;
 
@@ -85,7 +77,7 @@ class MyRecipesScreen extends StatelessWidget {
           success
               ? 'Resep berhasil dihapus'
               : context.read<SavedRecipeProvider>().errorMessage ??
-                  'Gagal menghapus resep',
+                    'Gagal menghapus resep',
         ),
       ),
     );
@@ -93,10 +85,11 @@ class MyRecipesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Resepku'),
-      ),
+      backgroundColor: colorScheme.surface,
+      appBar: AppBar(title: const Text('Resepku')),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openAddRecipe(context),
         icon: const Icon(Icons.add),
@@ -105,13 +98,10 @@ class MyRecipesScreen extends StatelessWidget {
       body: Consumer<SavedRecipeProvider>(
         builder: (context, provider, child) {
           if (provider.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
-          if (provider.errorMessage != null &&
-              provider.savedRecipes.isEmpty) {
+          if (provider.errorMessage != null && provider.savedRecipes.isEmpty) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(24),
@@ -124,17 +114,19 @@ class MyRecipesScreen extends StatelessWidget {
                       color: Colors.red,
                     ),
                     const SizedBox(height: 12),
-                    const Text(
+                    Text(
                       'Gagal memuat resep',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
+                        color: colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       provider.errorMessage!,
                       textAlign: TextAlign.center,
+                      style: TextStyle(color: colorScheme.onSurfaceVariant),
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
@@ -152,27 +144,29 @@ class MyRecipesScreen extends StatelessWidget {
               onRefresh: provider.loadSavedRecipes,
               child: ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                children: const [
-                  SizedBox(height: 130),
-                  Icon(
+                children: [
+                  const SizedBox(height: 130),
+                  const Icon(
                     Icons.menu_book_outlined,
                     size: 80,
                     color: Color(0xFFE8873A),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Center(
                     child: Text(
                       'Belum Ada Resep',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
+                        color: colorScheme.onSurface,
                       ),
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Center(
                     child: Text(
                       'Tambahkan resep masakanmu sendiri!',
+                      style: TextStyle(color: colorScheme.onSurfaceVariant),
                     ),
                   ),
                 ],
@@ -217,17 +211,19 @@ class _MyRecipeCard extends StatelessWidget {
   final VoidCallback onDelete;
 
   const _MyRecipeCard({
-  required this.recipe,
-  required this.onTap,
-  required this.onEdit,
-  required this.onDelete,
-});
+    required this.recipe,
+    required this.onTap,
+    required this.onEdit,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final totalTime = recipe.prepTime + recipe.cookTime;
 
     return Card(
+      color: colorScheme.surfaceContainer,
       margin: const EdgeInsets.only(bottom: 14),
       clipBehavior: Clip.antiAlias,
       elevation: 2,
@@ -238,25 +234,26 @@ class _MyRecipeCard extends StatelessWidget {
             contentPadding: const EdgeInsets.all(12),
             leading: ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: recipe.imageUrl != null &&
-                      recipe.imageUrl!.isNotEmpty
+              child: recipe.imageUrl != null && recipe.imageUrl!.isNotEmpty
                   ? Image.network(
                       recipe.imageUrl!,
                       width: 75,
                       height: 75,
                       fit: BoxFit.cover,
+                      webHtmlElementStrategy: WebHtmlElementStrategy.fallback,
                       errorBuilder: (_, _, _) {
-                        return _imagePlaceholder();
+                        return _imagePlaceholder(context);
                       },
                     )
-                  : _imagePlaceholder(),
+                  : _imagePlaceholder(context),
             ),
             title: Text(
               recipe.recipeName,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
+                color: colorScheme.onSurface,
               ),
             ),
             subtitle: Padding(
@@ -264,11 +261,17 @@ class _MyRecipeCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(recipe.cuisine ?? 'Masakan lainnya'),
+                  Text(
+                    recipe.cuisine ?? 'Masakan lainnya',
+                    style: TextStyle(color: colorScheme.onSurfaceVariant),
+                  ),
                   const SizedBox(height: 5),
                   Text(
                     '$totalTime menit • ${recipe.servings} porsi',
-                    style: const TextStyle(fontSize: 12),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
@@ -278,12 +281,9 @@ class _MyRecipeCard extends StatelessWidget {
               color: Color(0xFFE8873A),
             ),
           ),
-          const Divider(height: 1),
+          Divider(height: 1, color: colorScheme.outlineVariant),
           Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 4,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -312,16 +312,14 @@ class _MyRecipeCard extends StatelessWidget {
     );
   }
 
-  Widget _imagePlaceholder() {
+  Widget _imagePlaceholder(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       width: 75,
       height: 75,
-      color: const Color(0xFFFFE8D2),
-      child: const Icon(
-        Icons.restaurant,
-        size: 32,
-        color: Color(0xFFE8873A),
-      ),
+      color: colorScheme.surfaceContainerHighest,
+      child: const Icon(Icons.restaurant, size: 32, color: Color(0xFFE8873A)),
     );
   }
 }

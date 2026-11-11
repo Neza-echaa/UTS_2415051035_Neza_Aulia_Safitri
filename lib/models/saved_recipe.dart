@@ -1,4 +1,3 @@
-
 class SavedRecipe {
   final int? id;
   final String recipeName;

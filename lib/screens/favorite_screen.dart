@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -72,9 +71,7 @@ class FavoriteScreen extends StatelessWidget {
 class _FavoriteRecipeCard extends StatelessWidget {
   final Recipe recipe;
 
-  const _FavoriteRecipeCard({
-    required this.recipe,
-  });
+  const _FavoriteRecipeCard({required this.recipe});
 
   @override
   Widget build(BuildContext context) {
@@ -131,10 +128,7 @@ class _FavoriteRecipeCard extends StatelessWidget {
                     const SizedBox(height: 6),
                     Text(
                       recipe.cuisineLabel,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 13,
-                      ),
+                      style: const TextStyle(color: Colors.grey, fontSize: 13),
                     ),
                     const SizedBox(height: 8),
                     Row(
@@ -164,10 +158,7 @@ class _FavoriteRecipeCard extends StatelessWidget {
                   ),
                 );
               },
-              icon: const Icon(
-                Icons.favorite,
-                color: Color(0xFFE8873A),
-              ),
+              icon: const Icon(Icons.favorite, color: Color(0xFFE8873A)),
             ),
           ],
         ),

@@ -16,13 +16,15 @@ class RecipeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(18),
       child: Container(
         width: compact ? 190 : double.infinity,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: colorScheme.surfaceContainer,
           borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
@@ -41,13 +43,13 @@ class RecipeCard extends StatelessWidget {
               ),
               child: Image.network(
                 recipe.image,
-                height: compact ? 125 : 145,
+                height: compact ? 115 : 130,
                 width: double.infinity,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
-                    height: compact ? 125 : 145,
-                    color: const Color(0xFFF5E5D5),
+                    height: compact ? 115 : 130,
+                    color: colorScheme.surfaceContainerHighest,
                     child: const Center(
                       child: Icon(
                         Icons.restaurant,
@@ -59,7 +61,6 @@ class RecipeCard extends StatelessWidget {
                 },
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.all(12),
               child: Column(
@@ -69,39 +70,36 @@ class RecipeCard extends StatelessWidget {
                     recipe.name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
-                      color: Color(0xFF38251C),
+                      color: colorScheme.onSurface,
                     ),
                   ),
-
                   const SizedBox(height: 8),
-
                   Row(
                     children: [
-                      const Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                        size: 17,
-                      ),
+                      const Icon(Icons.star, color: Colors.amber, size: 17),
                       const SizedBox(width: 4),
                       Text(
                         recipe.rating.toStringAsFixed(1),
-                        style: const TextStyle(fontSize: 12),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
                       ),
                       const Spacer(),
-                      const Icon(
+                      Icon(
                         Icons.access_time,
                         size: 15,
-                        color: Colors.grey,
+                        color: colorScheme.onSurfaceVariant,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         '${recipe.totalTime} menit',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey,
+                          color: colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],

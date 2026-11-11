@@ -1,4 +1,3 @@
-
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/saved_recipe.dart';
@@ -12,9 +11,7 @@ class SupabaseService {
         .select()
         .order('created_at', ascending: false);
 
-    return response
-        .map((item) => SavedRecipe.fromJson(item))
-        .toList();
+    return response.map((item) => SavedRecipe.fromJson(item)).toList();
   }
 
   Future<SavedRecipe> addRecipe(SavedRecipe recipe) async {
@@ -27,10 +24,7 @@ class SupabaseService {
     return SavedRecipe.fromJson(response);
   }
 
-  Future<SavedRecipe> updateRecipe(
-    int id,
-    SavedRecipe recipe,
-  ) async {
+  Future<SavedRecipe> updateRecipe(int id, SavedRecipe recipe) async {
     final response = await _client
         .from('saved_recipes')
         .update(recipe.toJson())
@@ -42,9 +36,6 @@ class SupabaseService {
   }
 
   Future<void> deleteRecipe(int id) async {
-    await _client
-        .from('saved_recipes')
-        .delete()
-        .eq('id', id);
+    await _client.from('saved_recipes').delete().eq('id', id);
   }
 }

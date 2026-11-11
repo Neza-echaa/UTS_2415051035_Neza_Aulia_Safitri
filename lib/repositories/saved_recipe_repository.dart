@@ -1,4 +1,3 @@
-
 import '../models/saved_recipe.dart';
 import '../services/supabase_service.dart';
 
@@ -6,7 +5,7 @@ class SavedRecipeRepository {
   final SupabaseService _service;
 
   SavedRecipeRepository({SupabaseService? service})
-      : _service = service ?? SupabaseService();
+    : _service = service ?? SupabaseService();
 
   Future<List<SavedRecipe>> getSavedRecipes() {
     return _service.fetchSavedRecipes();
@@ -16,10 +15,7 @@ class SavedRecipeRepository {
     return _service.addRecipe(recipe);
   }
 
-  Future<SavedRecipe> editRecipe(
-    int id,
-    SavedRecipe recipe,
-  ) {
+  Future<SavedRecipe> editRecipe(int id, SavedRecipe recipe) {
     return _service.updateRecipe(id, recipe);
   }
 

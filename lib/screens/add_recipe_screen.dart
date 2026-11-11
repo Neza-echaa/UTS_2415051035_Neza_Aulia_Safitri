@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -85,9 +84,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
       servings: int.parse(_servingsController.text),
     );
 
-    final success = await context
-        .read<SavedRecipeProvider>()
-        .addRecipe(recipe);
+    final success = await context.read<SavedRecipeProvider>().addRecipe(recipe);
 
     if (!mounted) return;
 
@@ -126,9 +123,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
         controller: controller,
         validator: validator,
         maxLines: maxLines,
-        keyboardType: maxLines > 1
-            ? TextInputType.multiline
-            : keyboardType,
+        keyboardType: maxLines > 1 ? TextInputType.multiline : keyboardType,
         textInputAction: maxLines > 1
             ? TextInputAction.newline
             : TextInputAction.done,
@@ -137,9 +132,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
           hintText: hint,
           filled: true,
           fillColor: Colors.white,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: const BorderSide(color: Color(0xFFE8DCCF)),
@@ -153,9 +146,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF5),
-      appBar: AppBar(
-        title: const Text('Tambah Resep'),
-      ),
+      appBar: AppBar(title: const Text('Tambah Resep')),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -163,10 +154,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
           children: [
             const Text(
               'Informasi Resep',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
 
@@ -206,10 +194,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
             const SizedBox(height: 8),
             const Text(
               'Informasi Tambahan',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
 
@@ -239,18 +224,9 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
                 ),
               ),
               items: const [
-                DropdownMenuItem(
-                  value: 'Mudah',
-                  child: Text('Mudah'),
-                ),
-                DropdownMenuItem(
-                  value: 'Sedang',
-                  child: Text('Sedang'),
-                ),
-                DropdownMenuItem(
-                  value: 'Sulit',
-                  child: Text('Sulit'),
-                ),
+                DropdownMenuItem(value: 'Mudah', child: Text('Mudah')),
+                DropdownMenuItem(value: 'Sedang', child: Text('Sedang')),
+                DropdownMenuItem(value: 'Sulit', child: Text('Sulit')),
               ],
               onChanged: (value) {
                 if (value != null) {
@@ -264,24 +240,21 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
             _buildTextField(
               label: 'Waktu Persiapan (menit)',
               controller: _prepTimeController,
-              validator: (value) =>
-                  _validateNumber(value),
+              validator: (value) => _validateNumber(value),
               keyboardType: TextInputType.number,
             ),
 
             _buildTextField(
               label: 'Waktu Memasak (menit)',
               controller: _cookTimeController,
-              validator: (value) =>
-                  _validateNumber(value),
+              validator: (value) => _validateNumber(value),
               keyboardType: TextInputType.number,
             ),
 
             _buildTextField(
               label: 'Jumlah Porsi',
               controller: _servingsController,
-              validator: (value) =>
-                  _validateNumber(value, allowZero: false),
+              validator: (value) => _validateNumber(value, allowZero: false),
               keyboardType: TextInputType.number,
             ),
 
@@ -301,9 +274,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
                         ),
                       )
                     : const Icon(Icons.save),
-                label: Text(
-                  _isSaving ? 'Menyimpan...' : 'Simpan Resep',
-                ),
+                label: Text(_isSaving ? 'Menyimpan...' : 'Simpan Resep'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFE8873A),
                   foregroundColor: Colors.white,

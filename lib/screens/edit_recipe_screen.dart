@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,10 +7,7 @@ import '../providers/saved_recipe_provider.dart';
 class EditRecipeScreen extends StatefulWidget {
   final SavedRecipe recipe;
 
-  const EditRecipeScreen({
-    super.key,
-    required this.recipe,
-  });
+  const EditRecipeScreen({super.key, required this.recipe});
 
   @override
   State<EditRecipeScreen> createState() => _EditRecipeScreenState();
@@ -41,22 +37,22 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
     final recipe = widget.recipe;
 
     _nameController = TextEditingController(text: recipe.recipeName);
-    _descriptionController =
-        TextEditingController(text: recipe.description ?? '');
-    _ingredientsController =
-        TextEditingController(text: recipe.ingredients);
-    _instructionsController =
-        TextEditingController(text: recipe.instructions);
-    _imageController =
-        TextEditingController(text: recipe.imageUrl ?? '');
-    _cuisineController =
-        TextEditingController(text: recipe.cuisine ?? '');
-    _prepTimeController =
-        TextEditingController(text: recipe.prepTime.toString());
-    _cookTimeController =
-        TextEditingController(text: recipe.cookTime.toString());
-    _servingsController =
-        TextEditingController(text: recipe.servings.toString());
+    _descriptionController = TextEditingController(
+      text: recipe.description ?? '',
+    );
+    _ingredientsController = TextEditingController(text: recipe.ingredients);
+    _instructionsController = TextEditingController(text: recipe.instructions);
+    _imageController = TextEditingController(text: recipe.imageUrl ?? '');
+    _cuisineController = TextEditingController(text: recipe.cuisine ?? '');
+    _prepTimeController = TextEditingController(
+      text: recipe.prepTime.toString(),
+    );
+    _cookTimeController = TextEditingController(
+      text: recipe.cookTime.toString(),
+    );
+    _servingsController = TextEditingController(
+      text: recipe.servings.toString(),
+    );
 
     _difficulty = recipe.difficulty;
   }
@@ -89,19 +85,14 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
       child: TextFormField(
         controller: controller,
         maxLines: maxLines,
-        keyboardType: maxLines > 1
-            ? TextInputType.multiline
-            : keyboardType,
-        textInputAction: textInputAction ??
-            (maxLines > 1
-                ? TextInputAction.newline
-                : TextInputAction.done),
+        keyboardType: maxLines > 1 ? TextInputType.multiline : keyboardType,
+        textInputAction:
+            textInputAction ??
+            (maxLines > 1 ? TextInputAction.newline : TextInputAction.done),
         decoration: InputDecoration(
           labelText: label,
           hintText: hint,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         ),
         validator: required
             ? (value) {
@@ -137,12 +128,12 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
       cookTime: int.tryParse(_cookTimeController.text) ?? 0,
       servings: int.tryParse(_servingsController.text) ?? 1,
       createdAt: widget.recipe.createdAt,
-      
     );
 
-    final success = await context
-    .read<SavedRecipeProvider>()
-    .updateRecipe(widget.recipe.id!, updatedRecipe);
+    final success = await context.read<SavedRecipeProvider>().updateRecipe(
+      widget.recipe.id!,
+      updatedRecipe,
+    );
 
     if (!mounted) return;
 
@@ -168,9 +159,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Resep'),
-      ),
+      appBar: AppBar(title: const Text('Edit Resep')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Form(
@@ -178,11 +167,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildField(
-                'Nama Resep',
-                _nameController,
-                required: true,
-              ),
+              _buildField('Nama Resep', _nameController, required: true),
               _buildField('Deskripsi', _descriptionController, maxLines: 2),
               _buildField(
                 'Bahan-bahan',
@@ -227,10 +212,8 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                 ),
                 items: ['Mudah', 'Sedang', 'Sulit']
                     .map(
-                      (value) => DropdownMenuItem(
-                        value: value,
-                        child: Text(value),
-                      ),
+                      (value) =>
+                          DropdownMenuItem(value: value, child: Text(value)),
                     )
                     .toList(),
                 onChanged: (value) {
@@ -245,9 +228,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                 child: ElevatedButton.icon(
                   onPressed: _isSaving ? null : _updateRecipe,
                   icon: const Icon(Icons.save_outlined),
-                  label: Text(
-                    _isSaving ? 'Menyimpan...' : 'Simpan Perubahan',
-                  ),
+                  label: Text(_isSaving ? 'Menyimpan...' : 'Simpan Perubahan'),
                 ),
               ),
             ],

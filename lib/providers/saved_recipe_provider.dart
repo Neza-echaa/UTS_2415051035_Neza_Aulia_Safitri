@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../models/saved_recipe.dart';
@@ -7,9 +6,8 @@ import '../repositories/saved_recipe_repository.dart';
 class SavedRecipeProvider extends ChangeNotifier {
   final SavedRecipeRepository _repository;
 
-  SavedRecipeProvider({
-    SavedRecipeRepository? repository,
-  }) : _repository = repository ?? SavedRecipeRepository();
+  SavedRecipeProvider({SavedRecipeRepository? repository})
+    : _repository = repository ?? SavedRecipeRepository();
 
   List<SavedRecipe> _savedRecipes = [];
 
@@ -54,21 +52,13 @@ class SavedRecipeProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> updateRecipe(
-    int id,
-    SavedRecipe recipe,
-  ) async {
+  Future<bool> updateRecipe(int id, SavedRecipe recipe) async {
     try {
       _errorMessage = null;
 
-      final updatedRecipe = await _repository.editRecipe(
-        id,
-        recipe,
-      );
+      final updatedRecipe = await _repository.editRecipe(id, recipe);
 
-      final index = _savedRecipes.indexWhere(
-        (item) => item.id == id,
-      );
+      final index = _savedRecipes.indexWhere((item) => item.id == id);
 
       if (index != -1) {
         _savedRecipes[index] = updatedRecipe;
@@ -89,9 +79,7 @@ class SavedRecipeProvider extends ChangeNotifier {
 
       await _repository.removeRecipe(id);
 
-      _savedRecipes.removeWhere(
-        (recipe) => recipe.id == id,
-      );
+      _savedRecipes.removeWhere((recipe) => recipe.id == id);
 
       notifyListeners();
       return true;

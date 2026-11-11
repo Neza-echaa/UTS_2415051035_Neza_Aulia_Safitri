@@ -64,8 +64,7 @@ class Recipe {
 
   String get cuisineLabel => translateCuisine(cuisine);
 
-  List<String> get mealTypeLabels =>
-      mealType.map(translateMealType).toList();
+  List<String> get mealTypeLabels => mealType.map(translateMealType).toList();
 }
 
 String translateCuisine(String cuisine) {

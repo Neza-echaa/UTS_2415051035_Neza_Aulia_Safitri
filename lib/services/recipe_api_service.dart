@@ -11,9 +11,7 @@ class RecipeApiService {
     final uri = Uri.parse(_baseUrl);
 
     try {
-      final response = await http
-          .get(uri)
-          .timeout(const Duration(seconds: 15));
+      final response = await http.get(uri).timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
@@ -37,9 +35,7 @@ class RecipeApiService {
     final uri = Uri.parse('$_baseUrl/$id');
 
     try {
-      final response = await http
-          .get(uri)
-          .timeout(const Duration(seconds: 15));
+      final response = await http.get(uri).timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);

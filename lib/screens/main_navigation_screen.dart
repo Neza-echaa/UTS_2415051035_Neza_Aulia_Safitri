@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,17 +10,16 @@ import 'recipe_detail_screen.dart';
 import 'my_recipe_detail_screen.dart';
 import 'favorite_screen.dart';
 import 'my_recipes_screen.dart';
+import 'profile_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
 
   @override
-  State<MainNavigationScreen> createState() =>
-      _MainNavigationScreenState();
+  State<MainNavigationScreen> createState() => _MainNavigationScreenState();
 }
 
-class _MainNavigationScreenState
-    extends State<MainNavigationScreen> {
+class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _selectedIndex = 0;
 
   // Membuka detail resep dari API
@@ -43,18 +41,14 @@ class _MainNavigationScreenState
 
     if (recipe == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Gagal membuka detail resep.'),
-        ),
+        const SnackBar(content: Text('Gagal membuka detail resep.')),
       );
       return;
     }
 
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => RecipeDetailScreen(recipe: recipe!),
-      ),
+      MaterialPageRoute(builder: (_) => RecipeDetailScreen(recipe: recipe!)),
     );
   }
 
@@ -62,9 +56,7 @@ class _MainNavigationScreenState
   void _openSavedRecipe(SavedRecipe recipe) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => MyRecipeDetailScreen(recipe: recipe),
-      ),
+      MaterialPageRoute(builder: (_) => MyRecipeDetailScreen(recipe: recipe)),
     );
   }
 
@@ -84,18 +76,11 @@ class _MainNavigationScreenState
       ),
       const MyRecipesScreen(),
       const FavoriteScreen(),
-      const _PlaceholderScreen(
-        title: 'Profil',
-        icon: Icons.person_outline,
-        message: 'Halaman profil pengguna RecipeMate.',
-      ),
+      const ProfileScreen(),
     ];
 
     return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: pages,
-      ),
+      body: IndexedStack(index: _selectedIndex, children: pages),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
         onDestinationSelected: (index) {
@@ -133,37 +118,3 @@ class _MainNavigationScreenState
     );
   }
 }
-
-class _PlaceholderScreen extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final String message;
-
-  const _PlaceholderScreen({
-    required this.title,
-    required this.icon,
-    required this.message,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 65,
-              color: const Color(0xFFE8873A),
-            ),
-            const SizedBox(height: 12),
-            Text(message),
-          ],
-        ),
-      ),
-    );
-  }
-}
-  

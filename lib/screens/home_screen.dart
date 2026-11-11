@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +24,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final recipeProvider = context.watch<RecipeProvider>();
     final savedProvider = context.watch<SavedRecipeProvider>();
+    final colorScheme = Theme.of(context).colorScheme;
 
     final apiRecipes = recipeProvider.filteredRecipes;
 
@@ -32,12 +32,12 @@ class HomeScreen extends StatelessWidget {
     final selectedCuisine = recipeProvider.selectedCuisine;
 
     final savedRecipes = savedProvider.savedRecipes.where((recipe) {
-      final matchesSearch =
-          recipe.recipeName.toLowerCase().contains(query);
+      final matchesSearch = recipe.recipeName.toLowerCase().contains(query);
 
       final cuisine = recipe.cuisine ?? '';
 
-      final matchesCuisine = selectedCuisine == 'All' ||
+      final matchesCuisine =
+          selectedCuisine == 'All' ||
           translateCuisine(cuisine).toLowerCase() ==
               translateCuisine(selectedCuisine).toLowerCase();
 
@@ -50,11 +50,9 @@ class HomeScreen extends StatelessWidget {
           .map((recipe) => recipe.cuisine)
           .whereType<String>()
           .where((cuisine) => cuisine.isNotEmpty),
-    }.toList()
-      ..sort();
+    }.toList()..sort();
 
-    final allRecipesEmpty =
-        apiRecipes.isEmpty && savedRecipes.isEmpty;
+    final allRecipesEmpty = apiRecipes.isEmpty && savedRecipes.isEmpty;
 
     return Scaffold(
       body: SafeArea(
@@ -68,18 +66,18 @@ class HomeScreen extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.all(20),
             children: [
-              const Text(
+              Text(
                 'Halo, Pecinta Kuliner! 👋',
                 style: TextStyle(
-                  color: Color(0xFF8B7466),
+                  color: colorScheme.onSurfaceVariant,
                   fontSize: 14,
                 ),
               ),
               const SizedBox(height: 5),
-              const Text(
+              Text(
                 'Mau memasak apa\nhari ini?',
                 style: TextStyle(
-                  color: Color(0xFF38251C),
+                  color: colorScheme.onSurface,
                   fontSize: 27,
                   fontWeight: FontWeight.bold,
                   height: 1.25,
@@ -94,10 +92,8 @@ class HomeScreen extends StatelessWidget {
                   hintText: 'Cari resep favoritmu...',
                   prefixIcon: const Icon(Icons.search),
                   filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15,
-                  ),
+                  fillColor: colorScheme.surfaceContainerHighest,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 15),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide: BorderSide.none,
@@ -111,21 +107,19 @@ class HomeScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Resep Populer',
                     style: TextStyle(
                       fontSize: 19,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF38251C),
+                      color: colorScheme.onSurface,
                     ),
                   ),
                   TextButton(
                     onPressed: () => onExploreTap(1),
                     child: const Text(
                       'Lihat Semua',
-                      style: TextStyle(
-                        color: Color(0xFFE8873A),
-                      ),
+                      style: TextStyle(color: Color(0xFFE8873A)),
                     ),
                   ),
                 ],
@@ -133,8 +127,7 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 10),
 
-              if ((recipeProvider.isLoading ||
-                      savedProvider.isLoading) &&
+              if ((recipeProvider.isLoading || savedProvider.isLoading) &&
                   allRecipesEmpty)
                 const Center(
                   child: Padding(
@@ -154,28 +147,30 @@ class HomeScreen extends StatelessWidget {
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: [
-                      ...apiRecipes.take(8).map(
-                        (recipe) => Padding(
-                          padding: const EdgeInsets.only(right: 14),
-                          child: RecipeCard(
-                            recipe: recipe,
-                            compact: true,
-                            onTap: () =>
-                                onApiRecipeTap(recipe.id),
+                      ...apiRecipes
+                          .take(8)
+                          .map(
+                            (recipe) => Padding(
+                              padding: const EdgeInsets.only(right: 14),
+                              child: RecipeCard(
+                                recipe: recipe,
+                                compact: true,
+                                onTap: () => onApiRecipeTap(recipe.id),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      ...savedRecipes.take(8).map(
-                        (recipe) => Padding(
-                          padding: const EdgeInsets.only(right: 14),
-                          child: SavedRecipeCard(
-                            recipe: recipe,
-                            compact: true,
-                            onTap: () =>
-                                onSavedRecipeTap(recipe),
+                      ...savedRecipes
+                          .take(8)
+                          .map(
+                            (recipe) => Padding(
+                              padding: const EdgeInsets.only(right: 14),
+                              child: SavedRecipeCard(
+                                recipe: recipe,
+                                compact: true,
+                                onTap: () => onSavedRecipeTap(recipe),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -183,7 +178,7 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 25),
 
               // Kategori masakan
-              const Text(
+              Text(
                 'Jelajahi Berdasarkan Jenis Masakan',
                 style: TextStyle(
                   fontSize: 19,
@@ -203,15 +198,11 @@ class HomeScreen extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.only(right: 9),
                         child: ActionChip(
-                          label: Text(
-                            translateCuisine(cuisine),
-                          ),
-                          backgroundColor: Colors.white,
+                          label: Text(translateCuisine(cuisine)),
+                          backgroundColor: colorScheme.surfaceContainerHighest,
                           side: BorderSide.none,
                           onPressed: () {
-                            recipeProvider.filterByCuisine(
-                              cuisine,
-                            );
+                            recipeProvider.filterByCuisine(cuisine);
                             onExploreTap(1);
                           },
                         ),
@@ -235,25 +226,29 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              ...apiRecipes.take(3).map(
-                (recipe) => Padding(
-                  padding: const EdgeInsets.only(bottom: 15),
-                  child: RecipeCard(
-                    recipe: recipe,
-                    onTap: () => onApiRecipeTap(recipe.id),
+              ...apiRecipes
+                  .take(3)
+                  .map(
+                    (recipe) => Padding(
+                      padding: const EdgeInsets.only(bottom: 15),
+                      child: RecipeCard(
+                        recipe: recipe,
+                        onTap: () => onApiRecipeTap(recipe.id),
+                      ),
+                    ),
                   ),
-                ),
-              ),
 
-              ...savedRecipes.take(3).map(
-                (recipe) => Padding(
-                  padding: const EdgeInsets.only(bottom: 15),
-                  child: SavedRecipeCard(
-                    recipe: recipe,
-                    onTap: () => onSavedRecipeTap(recipe),
+              ...savedRecipes
+                  .take(3)
+                  .map(
+                    (recipe) => Padding(
+                      padding: const EdgeInsets.only(bottom: 15),
+                      child: SavedRecipeCard(
+                        recipe: recipe,
+                        onTap: () => onSavedRecipeTap(recipe),
+                      ),
+                    ),
                   ),
-                ),
-              ),
 
               if (!allRecipesEmpty &&
                   apiRecipes.isEmpty &&

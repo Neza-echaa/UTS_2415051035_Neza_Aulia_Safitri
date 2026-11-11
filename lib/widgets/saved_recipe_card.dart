@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../models/saved_recipe.dart';
@@ -17,13 +16,15 @@ class SavedRecipeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(18),
       child: Container(
         width: compact ? 190 : double.infinity,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: colorScheme.surfaceContainer,
           borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
@@ -40,16 +41,16 @@ class SavedRecipeCard extends StatelessWidget {
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(18),
               ),
-              child: recipe.imageUrl != null &&
-                      recipe.imageUrl!.trim().isNotEmpty
+              child:
+                  recipe.imageUrl != null && recipe.imageUrl!.trim().isNotEmpty
                   ? Image.network(
                       recipe.imageUrl!,
-                      height: compact ? 125 : 145,
+                      height: compact ? 115 : 130,
                       width: double.infinity,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => _placeholder(),
+                      errorBuilder: (_, _, _) => _placeholder(context),
                     )
-                  : _placeholder(),
+                  : _placeholder(context),
             ),
             Padding(
               padding: const EdgeInsets.all(12),
@@ -60,10 +61,10 @@ class SavedRecipeCard extends StatelessWidget {
                     recipe.recipeName,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
-                      color: Color(0xFF38251C),
+                      color: colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -73,39 +74,39 @@ class SavedRecipeCard extends StatelessWidget {
                         : 'Resep buatan sendiri',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
-                      color: Colors.grey,
+                      color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(height: 5),
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.access_time,
                         size: 15,
-                        color: Colors.grey,
+                        color: colorScheme.onSurfaceVariant,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         '${recipe.prepTime + recipe.cookTime} menit',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey,
+                          color: colorScheme.onSurfaceVariant,
                         ),
                       ),
                       const Spacer(),
-                      const Icon(
+                      Icon(
                         Icons.person_outline,
                         size: 15,
-                        color: Colors.grey,
+                        color: colorScheme.onSurfaceVariant,
                       ),
                       const SizedBox(width: 3),
                       Text(
                         '${recipe.servings}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey,
+                          color: colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -119,17 +120,15 @@ class SavedRecipeCard extends StatelessWidget {
     );
   }
 
-  Widget _placeholder() {
+  Widget _placeholder(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
-      height: compact ? 125 : 145,
+      height: compact ? 115 : 130,
       width: double.infinity,
-      color: const Color(0xFFF5E5D5),
+      color: colorScheme.surfaceContainerHighest,
       child: const Center(
-        child: Icon(
-          Icons.restaurant,
-          size: 40,
-          color: Color(0xFFE8873A),
-        ),
+        child: Icon(Icons.restaurant, size: 40, color: Color(0xFFE8873A)),
       ),
     );
   }

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../models/recipe.dart';
@@ -8,7 +7,7 @@ class RecipeProvider extends ChangeNotifier {
   final RecipeRepository _repository;
 
   RecipeProvider({RecipeRepository? repository})
-      : _repository = repository ?? RecipeRepository();
+    : _repository = repository ?? RecipeRepository();
 
   List<Recipe> _recipes = [];
   final Set<int> _favoriteIds = {};
@@ -21,14 +20,14 @@ class RecipeProvider extends ChangeNotifier {
 
   List<Recipe> get recipes => _recipes;
   List<Recipe> get favoriteRecipes {
-  return _recipes
-      .where((recipe) => _favoriteIds.contains(recipe.id))
-      .toList();
-}
+    return _recipes
+        .where((recipe) => _favoriteIds.contains(recipe.id))
+        .toList();
+  }
 
-bool isFavorite(int recipeId) {
-  return _favoriteIds.contains(recipeId);
-}
+  bool isFavorite(int recipeId) {
+    return _favoriteIds.contains(recipeId);
+  }
 
   bool get isLoading => _isLoading;
 
@@ -39,10 +38,7 @@ bool isFavorite(int recipeId) {
   String get selectedCuisine => _selectedCuisine;
 
   List<String> get cuisines {
-    final values = _recipes
-        .map((recipe) => recipe.cuisine)
-        .toSet()
-        .toList();
+    final values = _recipes.map((recipe) => recipe.cuisine).toSet().toList();
 
     values.sort();
 
@@ -51,12 +47,12 @@ bool isFavorite(int recipeId) {
 
   List<Recipe> get filteredRecipes {
     return _recipes.where((recipe) {
-      final matchesSearch = recipe.name
-          .toLowerCase()
-          .contains(_searchQuery.toLowerCase());
+      final matchesSearch = recipe.name.toLowerCase().contains(
+        _searchQuery.toLowerCase(),
+      );
 
-      final matchesCuisine = _selectedCuisine == 'All' ||
-          recipe.cuisine == _selectedCuisine;
+      final matchesCuisine =
+          _selectedCuisine == 'All' || recipe.cuisine == _selectedCuisine;
 
       return matchesSearch && matchesCuisine;
     }).toList();
@@ -104,12 +100,12 @@ bool isFavorite(int recipeId) {
   }
 
   void toggleFavorite(int recipeId) {
-  if (_favoriteIds.contains(recipeId)) {
-    _favoriteIds.remove(recipeId);
-  } else {
-    _favoriteIds.add(recipeId);
-  }
+    if (_favoriteIds.contains(recipeId)) {
+      _favoriteIds.remove(recipeId);
+    } else {
+      _favoriteIds.add(recipeId);
+    }
 
-  notifyListeners();
-}
+    notifyListeners();
+  }
 }

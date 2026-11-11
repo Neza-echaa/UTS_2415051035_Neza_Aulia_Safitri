@@ -1,4 +1,3 @@
-
 import '../models/recipe.dart';
 import '../services/recipe_api_service.dart';
 
@@ -6,7 +5,7 @@ class RecipeRepository {
   final RecipeApiService _apiService;
 
   RecipeRepository({RecipeApiService? apiService})
-      : _apiService = apiService ?? RecipeApiService();
+    : _apiService = apiService ?? RecipeApiService();
 
   Future<List<Recipe>> getRecipes() async {
     return await _apiService.fetchRecipes();

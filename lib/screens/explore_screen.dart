@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +22,7 @@ class ExploreScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final recipeProvider = context.watch<RecipeProvider>();
     final savedProvider = context.watch<SavedRecipeProvider>();
+    final colorScheme = Theme.of(context).colorScheme;
 
     final apiRecipes = recipeProvider.filteredRecipes;
 
@@ -31,13 +31,12 @@ class ExploreScreen extends StatelessWidget {
 
     // Filter resep buatan sendiri
     final savedRecipes = savedProvider.savedRecipes.where((recipe) {
-      final matchesSearch = recipe.recipeName
-          .toLowerCase()
-          .contains(query);
+      final matchesSearch = recipe.recipeName.toLowerCase().contains(query);
 
       final savedCuisine = recipe.cuisine ?? '';
 
-      final matchesCuisine = selectedCuisine == 'All' ||
+      final matchesCuisine =
+          selectedCuisine == 'All' ||
           translateCuisine(savedCuisine).toLowerCase() ==
               translateCuisine(selectedCuisine).toLowerCase();
 
@@ -46,19 +45,17 @@ class ExploreScreen extends StatelessWidget {
 
     // Gabungkan kategori dari API dan Supabase
     final allCuisines = {
-      ...recipeProvider.cuisines.where(
-        (cuisine) => cuisine != 'All',
-      ),
+      ...recipeProvider.cuisines.where((cuisine) => cuisine != 'All'),
       ...savedProvider.savedRecipes
           .map((recipe) => recipe.cuisine)
           .whereType<String>()
           .where((cuisine) => cuisine.isNotEmpty),
-    }.toList()
-      ..sort();
+    }.toList()..sort();
 
     final isEmpty = apiRecipes.isEmpty && savedRecipes.isEmpty;
 
     return Scaffold(
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
         title: const Text(
           'Jelajahi Resep',
@@ -72,11 +69,16 @@ class ExploreScreen extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
             child: TextField(
               onChanged: recipeProvider.searchRecipes,
+              style: TextStyle(color: colorScheme.onSurface),
               decoration: InputDecoration(
                 hintText: 'Cari nama resep...',
-                prefixIcon: const Icon(Icons.search),
+                hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: colorScheme.onSurfaceVariant,
+                ),
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: colorScheme.surfaceContainerHighest,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15),
                   borderSide: BorderSide.none,
@@ -94,8 +96,14 @@ class ExploreScreen extends StatelessWidget {
               children: [
                 ChoiceChip(
                   label: const Text('Semua'),
+                  labelStyle: TextStyle(
+                    color: selectedCuisine == 'All'
+                        ? const Color(0xFF38251C)
+                        : colorScheme.onSurface,
+                  ),
                   selected: selectedCuisine == 'All',
                   selectedColor: const Color(0xFFFFE0C2),
+                  backgroundColor: colorScheme.surfaceContainerHighest,
                   onSelected: (_) {
                     recipeProvider.filterByCuisine('All');
                   },
@@ -109,8 +117,14 @@ class ExploreScreen extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 8),
                     child: ChoiceChip(
                       label: Text(translateCuisine(cuisine)),
+                      labelStyle: TextStyle(
+                        color: selected
+                            ? const Color(0xFF38251C)
+                            : colorScheme.onSurface,
+                      ),
                       selected: selected,
                       selectedColor: const Color(0xFFFFE0C2),
+                      backgroundColor: colorScheme.surfaceContainerHighest,
                       onSelected: (_) {
                         recipeProvider.filterByCuisine(cuisine);
                       },
@@ -127,12 +141,9 @@ class ExploreScreen extends StatelessWidget {
           Expanded(
             child: Builder(
               builder: (context) {
-                if ((recipeProvider.isLoading ||
-                        savedProvider.isLoading) &&
+                if ((recipeProvider.isLoading || savedProvider.isLoading) &&
                     isEmpty) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 if (isEmpty &&
@@ -142,7 +153,10 @@ class ExploreScreen extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text('Gagal memuat resep.'),
+                        Text(
+                          'Gagal memuat resep.',
+                          style: TextStyle(color: colorScheme.onSurface),
+                        ),
                         const SizedBox(height: 8),
                         ElevatedButton(
                           onPressed: () async {
@@ -159,8 +173,11 @@ class ExploreScreen extends StatelessWidget {
                 }
 
                 if (isEmpty) {
-                  return const Center(
-                    child: Text('Resep tidak ditemukan.'),
+                  return Center(
+                    child: Text(
+                      'Resep tidak ditemukan.',
+                      style: TextStyle(color: colorScheme.onSurface),
+                    ),
                   );
                 }
 
@@ -171,8 +188,8 @@ class ExploreScreen extends StatelessWidget {
                     final crossAxisCount = width >= 900
                         ? 4
                         : width >= 600
-                            ? 3
-                            : 2;
+                        ? 3
+                        : 2;
 
                     final totalRecipes =
                         apiRecipes.length + savedRecipes.length;
@@ -180,13 +197,11 @@ class ExploreScreen extends StatelessWidget {
                     return GridView.builder(
                       padding: const EdgeInsets.all(16),
                       itemCount: totalRecipes,
-                      gridDelegate:
-                          SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: crossAxisCount,
                         crossAxisSpacing: 14,
                         mainAxisSpacing: 14,
-                        childAspectRatio:
-                            width < 400 ? 0.78 : 0.82,
+                        childAspectRatio: width < 400 ? 0.72 : 0.76,
                       ),
                       itemBuilder: (context, index) {
                         if (index < apiRecipes.length) {
@@ -194,19 +209,16 @@ class ExploreScreen extends StatelessWidget {
 
                           return RecipeCard(
                             recipe: recipe,
-                            onTap: () =>
-                                onApiRecipeTap(recipe.id),
+                            onTap: () => onApiRecipeTap(recipe.id),
                           );
                         }
 
-                        final savedIndex =
-                            index - apiRecipes.length;
+                        final savedIndex = index - apiRecipes.length;
                         final recipe = savedRecipes[savedIndex];
 
                         return SavedRecipeCard(
                           recipe: recipe,
-                          onTap: () =>
-                              onSavedRecipeTap(recipe),
+                          onTap: () => onSavedRecipeTap(recipe),
                         );
                       },
                     );
