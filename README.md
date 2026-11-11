@@ -155,7 +155,7 @@ Screenshot aplikasi akan ditambahkan pada folder `screenshots/`.
 
 Dokumentasi screenshot meliputi:
 
-- Halaman Beranda.
+- Halaman home.
 - Halaman Jelajahi.
 - Halaman Detail Resep.
 - Halaman Tambah Resep.
@@ -201,18 +201,18 @@ flutter run -d chrome --web-port=50648
 
 ## Git dan GitHub
 
-Pengembangan RecipeMate dilakukan secara bertahap menggunakan Git dan GitHub.
+Pengembangan RecipeMate dilakukan secara bertahap menggunakan Git dan GitHub untuk mengelola perubahan kode serta mendokumentasikan proses pengembangan aplikasi.
 
 - **Repository:** https://github.com/Neza-echaa/recipe_mate
 - **Branch utama:** `main`
-- **Jumlah meaningful commits:** 18
-- **Commit terakhir:** `9b67854` – Finalisasi aplikasi RecipeMate
 
 Riwayat pengembangan dapat dilihat melalui repository GitHub atau menggunakan perintah:
 
 ```bash
 git log --oneline
 ```
+
+Dokumentasi screenshot aplikasi tersedia pada folder `screenshots/` di repository.
 
 ## Pengembang
 
