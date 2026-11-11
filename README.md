@@ -203,7 +203,7 @@ flutter run -d chrome --web-port=50648
 
 Pengembangan RecipeMate dilakukan secara bertahap menggunakan Git dan GitHub untuk mengelola perubahan kode serta mendokumentasikan proses pengembangan aplikasi.
 
-- **Repository:** https://github.com/Neza-echaa/recipe_mate
+- **Repository:** Neza-echaa/UTS_2415051035_Neza_Aulia_Safitri
 - **Branch utama:** `main`
 
 Riwayat pengembangan dapat dilihat melalui repository GitHub atau menggunakan perintah:
